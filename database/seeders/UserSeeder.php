@@ -17,10 +17,10 @@ class UserSeeder extends Seeder
     {
         // User is a table
         User::create([
-            'name' => "Admin",
-            'email' => "admin@admin.com",
+            'name' => 'admin',
+            'email' => 'admin@admin.com',
             'password' => bcrypt('password'),
-            'role' => "admin"
+            'role' => 'admin',
         ]);
     }
 }

@@ -19,4 +19,14 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home')->middleware(['auth', 'admin']);
+
+// Route::resource('admin/users',UsersController::class)->middleware(['auth', 'admin']);
+// Route::resource('admin/categories',UsersController::class)->middleware(['auth', 'admin']);
+// Route::resource('admin/posts',UsersController::class)->middleware(['auth', 'admin']);
+
+Route::middleware(['auth', 'admin'])->prefix('/admin')->group(function () {
+    Route::resource('users', UsersController::class);
+    Route::resource('categories', UsersController::class);
+    Route::resource('posts', UsersController::class);
+});
