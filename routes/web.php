@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -26,7 +27,7 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 // Route::resource('admin/posts',UsersController::class)->middleware(['auth', 'admin']);
 
 Route::middleware(['auth', 'admin'])->prefix('/admin')->group(function () {
-    Route::resource('users', UsersController::class);
-    Route::resource('categories', UsersController::class);
-    Route::resource('posts', UsersController::class);
+    Route::resource('users', 'App\Http\Controllers\UserController');
+    Route::resource('categories', CategoryController::class);
+    Route::resource('posts', PostController::class);
 });
