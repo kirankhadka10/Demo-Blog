@@ -2,6 +2,15 @@
 
 @section('title','Update Users')
 
+@section('plugins.Select2',true)
+@section('js')
+<script>
+  $(document).ready(function(){
+    $('#role').select2();
+  });
+</script>
+@endsection
+
 @section('content')
 <div class="card">
   <div class="card-header">
@@ -12,7 +21,7 @@
   </div>
   
   <x-alert/>
-  
+
   <div class="card-body">
     {{-- <ul>
       @foreach ($errors->all() as $err )

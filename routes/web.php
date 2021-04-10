@@ -2,6 +2,9 @@
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\PostController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\CategoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,6 +31,6 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 
 Route::middleware(['auth', 'admin'])->prefix('/admin')->group(function () {
     Route::resource('users', 'App\Http\Controllers\UserController');
-    Route::resource('categories', CategoryController::class);
-    Route::resource('posts', PostController::class);
+    Route::resource('categories', 'App\Http\Controllers\CategoryController');
+    Route::resource('posts', 'App\Http\Controllers\PostController');
 });
