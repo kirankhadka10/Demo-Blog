@@ -7,7 +7,7 @@
   <div class="card-header">
     <h3 class="card-title text-bold">Post Details</h3>
     <div class="card-tools">
-      <a href="{{route('categories.index')}}" class="btn btn-primary btn-sm">Show All Categories</a>
+      <a href="{{route('posts.index')}}" class="btn btn-primary btn-sm">Show All Posts</a>
     </div>
   </div>
   <x-alert/>
@@ -24,6 +24,14 @@
       <tr>
         <td>Body</td>
         <td>{!! $post->body !!}</td>
+      </tr>
+      <tr>
+        <td>Media</td>
+        <td>
+          @if ($post->media_id)
+            <img src="/storage/{{$post->media->path}}" height="200px"/>
+          @endif
+        </td>
       </tr>
       <tr>
         <td>Created at</td>

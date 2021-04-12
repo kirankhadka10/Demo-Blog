@@ -20,11 +20,19 @@
         <li>{{$err}}</li>
       @endforeach
     </ul> --}}
-    <form action="{{route('posts.update',$post->id)}}" method="POST">
+    <form action="{{route('posts.update',$post->id)}}" method="POST" enctype="multipart/form-data" >
     @csrf
     @method('PUT')
     <x-input field='title' text='Title' type='text' :current='$post->title' />
+
     <x-input field='body' text='Body' type='textarea' :current='$post->body' />
+
+    <x-input
+    field="image"
+    text="Post Image"
+    type="file"
+    />
+    
     <button class="btn btn-primary" type="submit"> Save</button>
     </form>
   </div>

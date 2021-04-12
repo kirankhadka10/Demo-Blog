@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Post;
 use Illuminate\Http\Request;
+use App\Services\MediaService;
+use Illuminate\Support\Facades\Storage;
 
 class PostController extends Controller
 {
@@ -14,7 +16,7 @@ class PostController extends Controller
      */
     public function index()
     {
-        $posts = Post::all();
+        $posts = Post::with('media')->get();
         return view('posts.index', compact('posts'));
     }
 
@@ -38,17 +40,24 @@ class PostController extends Controller
     {
         $data = $request->validate([
             'title' => ['required',],
-            // 'slug' => ['required', 'unique:posts,slug'],
             'body' => ['required',],
+            'image' => ['nullable', 'image', 'mimes:jpeg,png,gif'],
+
+            // 'slug' => ['required', 'unique:posts,slug'],
             // 'type' => ['required',],
             // 'media_id' => ['nullable'],
             // 'user_id' => ['required']
         ]);
 
+        if (!empty($request->file('image'))) {
+            $media_id = MediaService::upload($request->file('image'), 'posts');
+        }
+
         Post::create([
             'title' => $request->title,
             'body' => clean($request->body),
             'user_id' => auth()->user()->id,
+            'media_id' => $media_id ?? null,
         ]);
 
         return redirect()->route('posts.index')->with('success', 'Post Created Successfully');
@@ -87,17 +96,27 @@ class PostController extends Controller
     {
         $data = $request->validate([
             'title' => ['required',],
-            // 'slug' => ['required', 'unique:posts,slug'],
             'body' => ['required',],
+            'image' => ['nullable', 'image', 'mimes:jpeg,png,gif'],
+
+            // 'slug' => ['required', 'unique:posts,slug'],
             // 'type' => ['required',],
             // 'media_id' => ['nullable'],
             // 'user_id' => ['required']
         ]);
 
+        if (!empty($request->file('image'))) {
+            if ($post->media_id) {
+                Storage::delete("public/" . $post->media->path);
+            }
+            $media_id = MediaService::upload($request->file('image'), 'posts');
+        }
+
         $post->update([
             'title' => $request->title,
             'body' => clean($request->body),
             'user_id' => auth()->user()->id,
+            'media_id' => $media_id ?? $post->media_id,
         ]);
 
         return redirect()->route('posts.index')->with('success', 'Post Updated Successfully');
@@ -111,6 +130,9 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
+        if ($post->media_id) {
+            Storage::delete("public/" . $post->media->path);
+        }
         $post->delete();
 
         return redirect()->route('posts.index')->with('Success', 'Post Deleted Successfully');

@@ -20,11 +20,19 @@
         <li>{{$err}}</li>
       @endforeach
     </ul> --}}
-    <form action="{{route('posts.store')}}" method="POST">
+    <form action="{{route('posts.store')}}" method="POST" enctype="multipart/form-data" >
     @csrf
     
     <x-input field='title' text='Title' type='text' />
+
     <x-input field='body' text='Body' type='textarea' />
+
+    <x-input
+    field="image"
+    text="Post Image"
+    type="file"
+    />
+    
     <button class="btn btn-primary" type="submit"> Save</button>
     </form>
   </div>
