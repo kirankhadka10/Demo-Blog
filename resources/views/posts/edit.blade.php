@@ -2,6 +2,14 @@
 
 @section('title','Update Post')
 
+@section('plugins.Select2',true)
+@push('js')
+<script>
+  $(document).ready(function(){
+    $('#category_id').select2();
+  });
+</script>
+@endpush
 
 @section('content')
 <x-alert/>
@@ -33,6 +41,25 @@
     type="file"
     />
     
+    <div class="form-group">
+      <label for="category_id">Select Category</label>
+      <select name="categories[]" multiple id="category_id" class="form-control">
+      <option value="">Choose One</option>
+      @foreach ($categories as $category )
+        <option value="{{$category->id}}" 
+          @if(in_array($category->id,$post_cat))
+          selected 
+          @endif>
+          {{$category->name}}
+        </option>
+      @endforeach
+    </select>
+
+    @error('categories')
+      <small class="form-text text-danger">{{$message}}</small>
+    @enderror
+    </div>
+
     <button class="btn btn-primary" type="submit"> Save</button>
     </form>
   </div>

@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Post;
 use Illuminate\Http\Request;
 use App\Services\MediaService;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
+use App\Models\Category;
 
 class PostController extends Controller
 {
@@ -27,7 +29,8 @@ class PostController extends Controller
      */
     public function create()
     {
-        return view('posts.create');
+        $categories = Category::all();
+        return view('posts.create', compact('categories'));
     }
 
     /**
@@ -42,6 +45,8 @@ class PostController extends Controller
             'title' => ['required',],
             'body' => ['required',],
             'image' => ['nullable', 'image', 'mimes:jpeg,png,gif'],
+            'categories' => ['nullable', 'array'],
+            'categories.*' => ['exists:categories,id'],
 
             // 'slug' => ['required', 'unique:posts,slug'],
             // 'type' => ['required',],
@@ -53,12 +58,14 @@ class PostController extends Controller
             $media_id = MediaService::upload($request->file('image'), 'posts');
         }
 
-        Post::create([
+        $post = Post::create([
             'title' => $request->title,
             'body' => clean($request->body),
             'user_id' => auth()->user()->id,
             'media_id' => $media_id ?? null,
         ]);
+
+        $post->categories()->sync($request->categories);
 
         return redirect()->route('posts.index')->with('success', 'Post Created Successfully');
     }
@@ -82,7 +89,9 @@ class PostController extends Controller
      */
     public function edit(Post $post)
     {
-        return view('posts.edit', compact('post'));
+        $categories = Category::all();
+        $post_cat = $post->categories->pluck('id')->toArray();
+        return view('posts.edit', compact('post', 'categories', 'post_cat'));
     }
 
     /**
@@ -98,6 +107,8 @@ class PostController extends Controller
             'title' => ['required',],
             'body' => ['required',],
             'image' => ['nullable', 'image', 'mimes:jpeg,png,gif'],
+            'categories' => ['nullable', 'array'],
+            'categories.*' => ['exists:categories,id'],
 
             // 'slug' => ['required', 'unique:posts,slug'],
             // 'type' => ['required',],
@@ -118,6 +129,8 @@ class PostController extends Controller
             'user_id' => auth()->user()->id,
             'media_id' => $media_id ?? $post->media_id,
         ]);
+
+        $post->categories()->sync($request->categories);
 
         return redirect()->route('posts.index')->with('success', 'Post Updated Successfully');
     }

@@ -2,7 +2,7 @@
 @props(['field'])
 
 @section('plugins.Editor',true)
-@section('js')
+@push('js')
 
 <script>
   ClassicEditor.create( document.querySelector( '{{$field}}' ),{
@@ -39,4 +39,4 @@
 			} );
 </script>
 
-@endsection
+@endpush
